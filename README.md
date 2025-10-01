@@ -1,5 +1,32 @@
-# Vue 3 + TypeScript + Vite
+Material 3 Dynamic Color Form Demo
+Описание проекта
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Это демонстрационный проект на Vue 3, который показывает динамическое использование Material 3 color palette в веб-форме.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Идея проекта:
+
+Позволить пользователю выбрать цвет seed color через цветовой пикер.
+
+Генерировать палитру Material 3 на основе выбранного цвета.
+
+Применять цвета палитры ко всем элементам формы: фон, текст, инпуты, кнопки, ошибки, подсказки.
+
+Визуализировать все цвета палитры в виде квадратиков для наглядности.
+
+Что хотели достичь
+
+Полностью динамическая форма, где цвета меняются при смене seed color.
+
+Использовать все ключевые цвета Material 3: primary, secondary, surface, onSurface, error, errorContainer, onErrorContainer, tertiaryContainer, onTertiaryContainer, outline.
+
+Валидация формы с визуальным выделением ошибок через цвета из палитры.
+
+Простой и наглядный пример работы с Material Color Utilities в Vue 3.
+
+Что получилось
+
+Реализован динамический color picker.
+
+Все элементы формы реагируют на изменения палитры: фон формы, текст, инпуты, кнопки, ошибки.
+
+Интерактивная визуализация всех цветов палитры.
