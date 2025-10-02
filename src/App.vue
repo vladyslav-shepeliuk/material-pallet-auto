@@ -9,38 +9,38 @@
       </label>
     </div>
 
-    <form class="demo-form" @submit.prevent="submitForm"
-          :style="{ backgroundColor: lightScheme.surface, color: lightScheme.onSurface }">
-
-      <label>
-        Name:
-        <input type="text"
-               v-model="form.name"
-               :style="inputStyle(errors.name)" placeholder="Enter your name" />
-        <span v-if="errors.name" :style="errorStyle">{{ errors.name }}</span>
-      </label>
-
-      <label>
-        Email:
-        <input type="email"
-               v-model="form.email"
-               :style="inputStyle(errors.email)" placeholder="Enter your email" />
-        <span v-if="errors.email" :style="errorStyle">{{ errors.email }}</span>
-      </label>
-
-      <label>
-        Password:
-        <input type="password"
-               v-model="form.password"
-               :style="inputStyle(errors.password)" placeholder="Password" />
-        <span v-if="errors.password" :style="errorStyle">{{ errors.password }}</span>
-      </label>
-
-      <div class="buttons">
-        <button type="submit" :style="{ backgroundColor: lightScheme.primary, color: lightScheme.onPrimary }">Submit</button>
-        <button type="button" @click="resetForm" :style="{ backgroundColor: lightScheme.secondary, color: lightScheme.onSecondary }">Reset</button>
+    <div class="card" :style="{ backgroundColor: lightScheme.background, color: lightScheme.onBackground }">
+      <div class="card-content" :style="{ backgroundColor: lightScheme.surfaceVariant, color: lightScheme.onSurfaceVariant }">
+        <h2 :style="{ color: lightScheme.primary }" class="card-title">Card Title</h2>
+        <h3 :style="{ color: lightScheme.secondary }" class="card-subtitle">Card Subtitle</h3>
+        <p class="card-text">Hello</p>
       </div>
-    </form>
+
+      <div class="card-actions" :style="{ backgroundColor: lightScheme.surface }">
+        <button
+          class="primary-button"
+          @mouseover="hoverPrimary = true"
+          @mouseleave="hoverPrimary = false"
+          :style="{
+            backgroundColor: hoverPrimary ? lightScheme.inversePrimary : lightScheme.primary,
+            color: lightScheme.onPrimary
+          }"
+        >
+          Primary Action
+        </button>
+        <button
+          class="secondary-button"
+          @mouseover="hoverSecondary = true"
+          @mouseleave="hoverSecondary = false"
+          :style="{
+            backgroundColor: hoverSecondary ? lightScheme.secondaryContainer : lightScheme.secondary,
+            color: hoverSecondary ? lightScheme.onSecondaryContainer : lightScheme.onSecondary
+          }"
+        >
+          Secondary Action
+        </button>
+      </div>
+    </div>
 
     <div class="palettes">
       <div v-for="(color, name) in lightScheme" :key="name" class="color-box">
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 
 export default defineComponent({
@@ -60,58 +60,24 @@ export default defineComponent({
     const seedColor = ref('#6200EE');
     const lightScheme = ref<Record<string, string>>({});
 
-    const form = reactive({ name: '', email: '', password: '' });
-    const errors = reactive({ name: '', email: '', password: '' });
+    const hoverPrimary = ref(false);
+    const hoverSecondary = ref(false);
 
     function generatePalette(seed: string) {
       const theme = themeFromSourceColor(argbFromHex(seed));
       const light = theme.schemes.light;
-      // Собираем все нужные цвета
-      return {
-        ...Object.fromEntries(Object.entries(light.toJSON()).map(([k, v]) => [k, hexFromArgb(v)])),
-        errorContainer: hexFromArgb(light.errorContainer),
-        onErrorContainer: hexFromArgb(light.onErrorContainer),
-        tertiaryContainer: hexFromArgb(light.tertiaryContainer),
-        onTertiaryContainer: hexFromArgb(light.onTertiaryContainer),
-      };
+      return Object.fromEntries(
+        Object.entries(light.toJSON()).map(([k, v]) => [k, hexFromArgb(v)])
+      );
     }
 
     lightScheme.value = generatePalette(seedColor.value);
+
     watch(seedColor, (newColor) => {
       lightScheme.value = generatePalette(newColor);
     });
 
-    function submitForm() {
-      errors.name = form.name ? '' : 'Name is required';
-      errors.email = form.email ? '' : 'Email is required';
-      errors.password = form.password ? '' : 'Password is required';
-      if (!errors.name && !errors.email && !errors.password) alert('Form submitted!');
-    }
-
-    function resetForm() {
-      form.name = ''; form.email = ''; form.password = '';
-      errors.name = ''; errors.email = ''; errors.password = '';
-    }
-
-    function inputStyle(hasError: string) {
-      return {
-        backgroundColor: lightScheme.value.surfaceVariant,
-        color: lightScheme.value.onSurfaceVariant,
-        borderColor: hasError ? lightScheme.value.error : lightScheme.value.outline,
-        borderWidth: '2px'
-      };
-    }
-
-    const errorStyle = {
-      color: lightScheme.value.onErrorContainer || lightScheme.value.error,
-      backgroundColor: lightScheme.value.errorContainer,
-      padding: '0.2rem 0.4rem',
-      borderRadius: '4px',
-      fontSize: '0.8rem',
-      marginTop: '0.2rem'
-    };
-
-    return { seedColor, lightScheme, form, errors, submitForm, resetForm, inputStyle, errorStyle };
+    return { seedColor, lightScheme, hoverPrimary, hoverSecondary };
   },
 });
 </script>
@@ -138,48 +104,42 @@ input[type="color"] {
   cursor: pointer;
 }
 
-.demo-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
-  border-radius: 12px;
+.card {
+  border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 400px;
+  overflow: hidden;
+  width: 400px;
+  margin-bottom: 2rem;
 }
 
-.demo-form label {
+.card-content {
+  padding: 16px;
+}
+
+.card-title {
+  margin: 0;
+}
+
+.card-subtitle {
+  margin: 4px 0 12px;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.card-actions {
   display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
+  gap: 12px;
+  padding: 16px;
 }
 
-.demo-form input {
-  padding: 0.5rem;
-  border-radius: 6px;
-  margin-top: 0.3rem;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.demo-form button {
-  padding: 0.5rem 1rem;
+.primary-button,
+.secondary-button {
   border: none;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: transform 0.1s ease;
-}
-
-.demo-form button:hover {
-  transform: scale(1.05);
 }
 
 .palettes {
